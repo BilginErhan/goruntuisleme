@@ -1,53 +1,79 @@
-clear;
-clc;
 close all;
+clc;
+clear;
 
-I = imread('resim.png');
-Ig = rgb2gray(I);
-Ig = double(Ig);
+x = ['yatay.png' ; '+45.png  ' ;'dikey.png' ;'-45.png  '];
+celldata = cellstr(x)
 
-maske = [0 -1 0;-1 150 -1;0 -1 0];
+for k = 1:4
+    a = celldata(k);
+    a = char(a);
+    disp(a);
+    I = imread(a);
+    Ig = rgb2gray(I);
 
+    Igyeni = Ig;
+    [N,M] = size(Ig);
 
+    Igyeni = double(Igyeni);
+    Ig = double(Ig);
 
-[N M] = size(Ig);
-[x y] = size(maske);
-
-Iout = zeros(N+2,M+2);
-Iout = double(Iout);
-
-k=1;
-l=1;
-for i= 1:N+2
-    for j=1:M+2
-        if(i==1 || i== N+2 || j==1 || j==M+2)
-            Iout(i,j) = 0;
-        else
-            Iout(i,j)=Ig(k,l);
-            l=l+1;
+    if(k==1)
+         m = [-1 -1 -1; 2 2 2; -1 -1 -1];
+    elseif(k==2)
+        m = [-1 -1 2; -1 2 -1; 2 -1 -1];
+    elseif(k==3)
+         m = [-1 2 -1; -1 2 -1; -1 2 -1];
+    elseif (k==4) 
+        m = [2 -1 -1; -1 2 -1; -1 -1 2];
+    end
+    disp(m);
+    
+    for i = 2:N-1
+        for j = 2:M-1
+            Igyeni(i,j) = (m(1,1)*Ig(i-1,j-1)+m(1,2)*Ig(i-1,j)+m(1,3)*Ig(i-1,j+1)+m(2,1)*Ig(i,j-1)+m(2,2)*Ig(i,j)+m(2,3)*Ig(i,j+1)+m(3,1)*Ig(i+1,j-1)+m(3,2)*Ig(i,j)+m(3,3)*Ig(i,j))/9;
+            if(i>193 && i<200)
+            end
         end
     end
-    if(i==1 || i== N+2)
-    else
-        k=k+1;
+    enkucuk = Igyeni(1,1);
+
+    for i =1:N
+        for j=1:M
+            if(Igyeni(i,j)<enkucuk)
+                enkucuk = Igyeni(i,j);
+            end
+        end
     end
-    l=1;
-end
 
-for i=2:N-1
-    for j=2:M-1
-        Iout(i,j)=(Iout(i-1,j-1)*maske(1,1)+Iout(i-1,j)*maske(1,2)+Iout(i-1,j+1)*maske(1,3)+Iout(i,j-1)*maske(2,1)+Iout(i,j)*maske(2,2)+Iout(i,j+1)*maske(2,3)+Iout(i+1,j-1)*maske(3,1)+Iout(i+1,j)*maske(3,2)+Iout(i+1,j+1)*maske(3,3))/(x*y);
-        
+    for i =1:N
+        for j=1:M
+            if(Igyeni(i,j)<0)
+                Igyeni(i,j) = Igyeni(i,j)-enkucuk;
+            end
+        end
     end
+
+
+    enbuyuk = Igyeni(1,1);
+    for i = 1:N
+        for j = 1:M
+            if(Igyeni(i,j)>enbuyuk)
+                enuyuk = Igyeni(i,j);
+            end
+        end
+    end
+
+
+    for i =1:N
+        for j=1:M
+            Igyeni(i,j) = Igyeni(i,j)*255/enbuyuk;
+        end
+    end
+
+    Igyeni = uint8(Igyeni);
+    Ig = uint8(Ig);
+
+    figure;
+    imshow(Igyeni);
 end
-
-
-Ig = uint8(Ig);
-Iout = uint8(Iout);
-
-figure;
-imshow(Ig);
-
-figure;
-imshow(Iout);
-

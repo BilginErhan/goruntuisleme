@@ -1,28 +1,29 @@
-close all;
-clc;
-clear;
-I=imread('resim.png'); %resmi oku
-Ig = rgb2gray(I);       %griye çevir
-Ig = double(Ig);
-[N M] = size(Ig);   %satýr n sutun m
 
-Iout = zeros(N/2,M/2); %yarýya düþürülmüþ bir matris oluþtur
+%Final 2016-2017 1. soru
 
-k=1;
-l=1;
-for i = 1:2:N
-    for j = 1:2:M
-        Iout(k,l)=(Ig(i,j)+Ig(i,j+1)+Ig(i+1,j)+Ig(i+1,j+1))/4;
-        l=l+1;
+%I = imread('fatik.jpg');
+%Ig = rgb2gray(I);
+
+function soru1(Ig)
+
+[N M] = size(Ig);
+
+T = zeros(N,M);
+
+for i = 1:N
+    for j = 1:M
+        if(Ig(i,j)<=99)
+            T(i,j)=0;
+        elseif(Ig(i,j)<=199)
+            T(i,j)=10;
+        elseif(Ig(i,j)<=255)
+            T(i,j)=20;
+        end
     end
-    k=k+1;
-    l=1;
 end
 
-Ig = uint8(Ig);
-Iout = uint8(Iout);
-
 figure;
-imshow(Iout);
+imshow(T);
 figure;
 imshow(Ig);
+end

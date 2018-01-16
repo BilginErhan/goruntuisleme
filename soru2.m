@@ -1,64 +1,31 @@
-clear;
-close all;
-clc;
 
-I = imread('resim.jpg');
 
+% Final 2016-2017 soru2
+
+
+I = imread('fatik.jpg');
 Ig = rgb2gray(I);
 
 [N M] = size(Ig);
 
-Iout = zeros(N*2,M*2);
+D = zeros(N,M);
+H = zeros(N,M);
 
-Ig = double(Ig);
-Iout = double(Iout);
+Do = 100;
 
-k=1;
-l=1;
-for i=1:2:N*2
-    for j=1:2:M*2
-        Iout(i,j)=Ig(k,l);
-        l=l+1;
+for u = 1:N
+    for v = 1:M
+        D(u,v) = sqrt((u-(N/2))^2+(v-(M/2))^2);
+        H(u,v) = exp((-D(u,v)^2/2*Do^2));
     end
-    k=k+1;
-    l=1;
 end
 
-k=1;
-l=1;
-for i=1:2:N*2
-    for j=2:2:M*2
-        if(j==M*2)
-            Iout(i,j)=Iout(i,j-1);
-        else
-            Iout(i,j)=(Iout(i,j-1)+Iout(i,j+1))/2;
-        end
-        
-    end
-    k=k+1;
-    l=1;
-end
-
-k=1;
-l=1;
-for i=2:2:N*2
-    for j=1:M*2
-        if(i==N*2)
-            Iout(i,j)=Iout(i-1,j);
-        else
-            Iout(i,j)=(Iout(i-1,j)+Iout(i+1,j))/2;
-        end
-        
-    end
-    k=k+1;
-    l=1;
-end
-
-
-Ig = uint8(Ig);
-Iout = uint8(Iout);
+Igyeni = Ig;
+Igyeni = double(Igyeni);
+Igyeni = Igyeni.*H;
+Igyeni = uint8(Igyeni);
 
 figure;
 imshow(Ig);
 figure;
-imshow(Iout);
+imshow(Igyeni);
